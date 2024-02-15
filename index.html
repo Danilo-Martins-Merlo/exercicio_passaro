@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <title>Exercício do Pássaro</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+
+    //Área designada para definição do tamanho da tela do jogo e outras configurações 
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+    var passarinho;
+    var direcao = 5
+
+    //Função utilizada para o carregamento das imagens para nossa programação
+    function preload() {
+
+        this.load.image('fundo', 'assets/bg_space.png');
+        this.load.spritesheet('passaro', 'assets/bird-green.png', { frameWidth: 75, frameHeight: 75});
+
+    }
+
+    // Função utilizada para definir as especificações da imagem (tamanho, escala, sequência de quadros, repetição e etc...)
+    function create() {
+
+        this.add.image(400, 300, 'fundo').setScale(1.2);
+        passarinho = this.add.sprite(100,300,'passaro').setScale(1.3);
+        
+        this.anims.create({
+        
+            key: 'fly',
+            frames: this.anims.generateFrameNumbers('passaro', { start: 0, end: 7}),
+            frameRate: 10,
+            repeat: -1
+          
+        });
+                
+        passarinho.anims.play('fly', true);
+        passarinho.ida = true;
+        passarinho.iday = true;
+    }
+
+    // Função que atualiza constantemente o que está aparecendo na tela, também é responsável
+    function update() { 
+        
+        // Inverte horizontalmente o sprite do passaro caso ele chegue ao lado esquerdo da tela
+        if (passarinho.x === 100){
+            passarinho.setFlip(false, false);
+            passarinho.ida = true;
+        }
+
+        // Faz o passarinho se movimentar para a direita enquanto sua posição for menor do que 700
+        while (passarinho.x < 700 && passarinho.ida === true){
+            console.log('Passarinho se move para o lado direito da tela')
+            passarinho.x += 5;
+            break
+        }
+
+        // Inverte horizontalmente o sprite do passaro caso ele chegue ao lado direito da tela
+        if (passarinho.x === 700){
+            passarinho.setFlip(true, false);
+            passarinho.ida = false;
+        }
+
+        // Faz o passaro se movimentar para a esquerda enquanto sua posição for menos que maior que 100
+        while (passarinho.x > 100 && passarinho.ida === false){
+            console.log('Passarinho se move para o lado esquerdo da tela')
+            passarinho.x -= 5;
+            break
+        }
+        
+        // Verifica
+        if (passarinho.y <= 100){
+            passarinho.iday = true;
+        }
+
+        //
+        while (passarinho.y < 500 && passarinho.iday === true){
+            passarinho.y += direcao;
+            break
+        }
+
+        //
+        if (passarinho.y >= 500){
+            passarinho.iday = false;
+        }
+
+        //
+        while (passarinho.y > 100 && passarinho.iday === false){
+            passarinho.y -= direcao;
+            break
+        }
+    }   
+
+</script>
+</body>
+</html>
